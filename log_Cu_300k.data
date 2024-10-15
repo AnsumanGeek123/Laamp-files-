@@ -1,0 +1,36 @@
+
+# Initial velocity of the atoms
+velocity all create 300 873847 rot yes mom yes dist gaussian 
+
+# Temperature controller; NVT heating
+# Heating phase
+fix	1 all nvt temp 300 300 0.1 
+run     500
+Memory usage per processor = 2.07846 Mbytes
+Step Temp Volume Press PotEng KinEng TotEng 
+       6          300        20000    1964.1205   -1163.2474    13.960096   -1149.2873 
+     100    138.37053        20000    1410.1123   -1154.6932     6.438886   -1148.2543 
+     200      187.631        20000    484.62125   -1154.3621    8.7311557   -1145.6309 
+     300    240.28895        20000    1436.5734   -1153.5737    11.181523   -1142.3922 
+     400    249.23259        20000    689.85873   -1150.6866    11.597703   -1139.0889 
+     500    308.19889        20000   -329.89308   -1150.5584     14.34162   -1136.2168 
+     506    314.63986        20000   -486.97597   -1150.7182    14.641342   -1136.0769 
+Loop time of 0.656179 on 1 procs for 500 steps with 361 atoms
+
+Pair  time (%) = 0.640488 (97.6088)
+Neigh time (%) = -6.07688e-008 (-9.26101e-006)
+Comm  time (%) = -3.8346e-006 (-0.000584384)
+Outpt time (%) = 0.0156888 (2.39093)
+Other time (%) = 5.96396e-006 (0.000908892)
+
+Nlocal:    361 ave 361 max 361 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    1268 ave 1268 max 1268 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    46628 ave 46628 max 46628 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 46628
+Ave neighs/atom = 129.163
+Neighbor list builds = 1
+Dangerous builds = 0

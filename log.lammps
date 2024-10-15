@@ -1,0 +1,86 @@
+LAMMPS (21 Dec 2011)
+# LAMMPS script for cylindrical nanoparticles at 300 K
+
+units            metal
+echo 		         both
+atom_style       atomic
+dimension	       3
+
+# Define boundary conditions
+boundary         p p p
+
+# Create a rectangular region for the simulation box
+region           box block -10 10 0 50 -10 10 units box
+create_box       1 box
+Created orthogonal box = (-10 0 -10) to (10 50 10)
+  1 by 1 by 1 MPI processor grid
+#----------------------------------------------------------------------------
+# Create a cylindrical region within the rectangular box
+lattice fcc 3.61 
+Lattice spacing in x,y,z = 3.61 3.61 3.61
+region           Cu sphere 0 25 0 10 units box
+create_atoms     1 region Cu units box
+Created 361 atoms
+
+#----------------------------------------------------------------------------------------
+
+# Integration timestep
+timestep         0.001
+#-------------------------------------------------------------------------------------------
+# Force calculations
+pair_style      eam/alloy
+pair_coeff      * * Cu_zhou.eam.alloy Cu 
+
+#-----------------------------------------------------------------------------------
+
+# Minimize to obtain the lowest energy state for the initial configuration
+minimize   1.0e-4 1.0e-2 100 100
+WARNING: Resetting reneighboring criteria during minimization (min.cpp:167)
+Memory usage per processor = 2.76511 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       0            0    -1150.013            0    -1150.013   -646.00883 
+       6            0   -1163.2474            0   -1163.2474    1218.5693 
+Loop time of 0.015677 on 1 procs for 6 steps with 361 atoms
+
+Minimization stats:
+  Stopping criterion = energy tolerance
+  Energy initial, next-to-last, final = 
+        -1150.01304064     -1163.16694366     -1163.24743172
+  Force two-norm initial, final = 23.1465 0.879665
+  Force max component initial, final = 3.36038 0.125128
+  Final line search alpha, max atom move = 0.25 0.0312819
+  Iterations, force evaluations = 6 12
+
+Pair  time (%) = 0.0156776 (100.004)
+Neigh time (%) = 0 (0)
+Comm  time (%) = 1.30688e-006 (0.00833625)
+Outpt time (%) = 0 (0)
+Other time (%) = -1.90246e-006 (-0.0121353)
+
+Nlocal:    361 ave 361 max 361 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    1268 ave 1268 max 1268 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    45661 ave 45661 max 45661 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 45661
+Ave neighs/atom = 126.485
+Neighbor list builds = 0
+Dangerous builds = 0
+
+#-------------------------------------------------------------------------------
+
+# Output - thermodynamic
+thermo    100
+thermo_style custom step temp vol press pe ke etotal
+
+#-------------------------------------------------------------------------------------
+
+# Visualize the atomic positions
+dump	1 all custom 100 Cu_sphere_*.lammpstrj id type x y z 
+
+#-----------------------------------------------------------
+
+# Log file for thermodynamic data
+log	log_Cu_300k.data
