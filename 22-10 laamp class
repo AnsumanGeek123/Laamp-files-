@@ -1,0 +1,87 @@
+# LAMMPS script for cylindrical nanoparticles at 300 K
+
+units            metal
+echo 		         both
+atom_style       atomic
+dimension	       3
+
+# Define boundary conditions
+boundary         p p p
+
+# Create a rectangular region for the simulation box
+region           box block 0 50 0 50 0 50 units box
+create_box       1 box
+
+#----------------------------------------------------------------------------
+
+# Create a cylindrical region within the rectangular box
+lattice fcc 3.61 
+region           Cu cylinder z 40 40 5 0 10 units box  # Fixed to ensure proper parameters
+create_atoms     1 region Cu units box
+
+#----------------------------------------------------------------------------
+
+# Create a spherical region within the rectangular box
+lattice fcc 3.61 
+region           2Cu sphere 5 5 5 5 units box
+create_atoms     1 region 2Cu units box  # Corrected region name
+
+#----------------------------------------------------------------------------
+
+# Create a spherical region within the rectangular box
+lattice fcc 3.61 
+region           3Cu sphere 25 25 25 5 units box
+create_atoms     1 region 3Cu units box
+
+#----------------------------------------------------------------------------
+
+# Create a spherical region within the rectangular box
+lattice fcc 3.61 
+region           4Cu sphere 12 12 12 5 units box
+create_atoms     1 region 4Cu units box
+
+#----------------------------------------------------------------------------
+
+# Create a spherical region within the rectangular box
+lattice fcc 3.61 
+region           5Cu sphere 18 18 18 5 units box
+create_atoms     1 region 5Cu units box
+
+#----------------------------------------------------------------------------------------
+
+# Integration timestep
+timestep         0.001
+
+#-------------------------------------------------------------------------------------------
+# Force calculations
+pair_style      eam/alloy
+pair_coeff      * * Cu_zhou.eam.alloy Cu 
+
+#-----------------------------------------------------------------------------------
+
+# Minimize to obtain the lowest energy state for the initial configuration
+minimize         1.0e-4 1.0e-2 100 100
+
+#-------------------------------------------------------------------------------
+
+# Output - thermodynamic
+thermo           100
+thermo_style     custom step temp vol press pe ke etotal
+
+#-------------------------------------------------------------------------------------
+
+# Visualize the atomic positions
+dump             1 all custom 100 Cu_sphere_*.lammpstrj id type x y z 
+
+#-----------------------------------------------------------
+
+# Log file for thermodynamic data
+log              log_Cu_300k.data
+
+# Initial velocity of the atoms
+velocity         all create 300 873847 rot yes mom yes dist gaussian 
+
+# Temperature controller; NVT heating
+# Heating phase
+fix              1 all nvt temp 300 600 0.1 
+run              500  # Ensure this is appropriate for your simulation needs
