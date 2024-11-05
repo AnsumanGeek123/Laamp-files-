@@ -9,15 +9,42 @@ dimension	       3
 boundary         p p p
 
 # Create a rectangular region for the simulation box
-region           box block -10 10 0 50 -10 10 units box
+region           box block -25 25 0 50 -25 25 units box
 create_box       1 box
 #----------------------------------------------------------------------------
 # Create a cylindrical region within the rectangular box
 lattice fcc 3.61 
-region           Cu sphere 0 25 0 10 units box
+region           Cu sphere 13 13 13 12 units box
 create_atoms     1 region Cu units box
 
+#----------------------------------------------------------------------------
+# Create a spherical region within the rectangular box
+region           2Cu sphere 13 28 13 12 units box
+create_atoms     1 region 2Cu units box
+
+#----------------------------------------------------------------------------
+# Create a cylindrical region within the rectangular box
+region           3Cu sphere 13 13 -13 12 units box
+create_atoms     1 region 3Cu units box
+
+#----------------------------------------------------------------------------
+# Create a spherical region within the rectangular box
+region           4Cu sphere 13 38 -13 12 units box
+create_atoms     1 region 4Cu units box
+
+#----------------------------------------------------------------------------
+# Create a spherical region within the rectangular box
+region           5Cu sphere -13 13 13 12 units box
+create_atoms     1 region 5Cu units box
+#----------------------------------------------------------------------------
+# Create a spherical region within the rectangular box
+region           6Cu sphere -13 38 13 12 units box
+create_atoms     1 region 6Cu units box
 #----------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+# Create a spherical region within the rectangular box
+region           7Cu sphere -13 13 -13 12 units box
+create_atoms     1 region 7Cu units box
 
 # Integration timestep
 timestep         0.001
@@ -30,27 +57,26 @@ pair_coeff      * * Cu_zhou.eam.alloy Cu
 
 # Minimize to obtain the lowest energy state for the initial configuration
 minimize   1.0e-4 1.0e-2 100 100
-
 #-------------------------------------------------------------------------------
 
 # Output - thermodynamic
 thermo    100
-thermo_style custom step temp vol press pe ke etotal
+thermo_style custom step temp vol press pe ke etotal density
 
 #-------------------------------------------------------------------------------------
 
 # Visualize the atomic positions
-dump	1 all custom 100 Cu_sphere_*.lammpstrj id type x y z 
+dump	1 all custom 50 Cu_sphere_*.lammpstrj id type x y z 
 
 #-----------------------------------------------------------
 
 # Log file for thermodynamic data
-log	log_Cu_300k.data
+log	log_Cu_melt.data
 
 # Initial velocity of the atoms
 velocity all create 300 873847 rot yes mom yes dist gaussian 
 
 # Temperature controller; NVT heating
 # Heating phase
-fix	1 all nvt temp 300 300 0.1 
-run     500
+fix	1 all npt temp 300 300 0.1 iso 0 0 0.1 
+run     2000

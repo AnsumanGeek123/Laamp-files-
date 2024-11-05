@@ -1,4 +1,7 @@
-LAMMPS (21 Dec 2011)
+LAMMPS (29 Aug 2024 - Update 1)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
+  using 1 OpenMP thread(s) per MPI task
+Loaded 1 plugins from C:\Users\NITR\AppData\Local\LAMMPS 64-bit 29Aug2024\plugins
 # LAMMPS script for cylindrical nanoparticles at 300 K
 
 units            metal
@@ -10,77 +13,141 @@ dimension	       3
 boundary         p p p
 
 # Create a rectangular region for the simulation box
-region           box block -10 10 0 50 -10 10 units box
+region           box block -25 25 0 50 -25 25 units box
 create_box       1 box
-Created orthogonal box = (-10 0 -10) to (10 50 10)
+Created orthogonal box = (-25 0 -25) to (25 50 25)
   1 by 1 by 1 MPI processor grid
 #----------------------------------------------------------------------------
 # Create a cylindrical region within the rectangular box
-lattice fcc 3.61 
+lattice fcc 3.61
 Lattice spacing in x,y,z = 3.61 3.61 3.61
-region           Cu sphere 0 25 0 10 units box
+region           Cu sphere 13 13 13 12 units box
 create_atoms     1 region Cu units box
-Created 361 atoms
+Created 616 atoms
+  using box units in orthogonal box = (-25 0 -25) to (25 50 25)
+  create_atoms CPU = 0.000 seconds
 
+#----------------------------------------------------------------------------
+# Create a spherical region within the rectangular box
+region           2Cu sphere 13 28 13 12 units box
+create_atoms     1 region 2Cu units box
+Created 619 atoms
+  using box units in orthogonal box = (-25 0 -25) to (25 50 25)
+  create_atoms CPU = 0.001 seconds
+
+#----------------------------------------------------------------------------
+# Create a cylindrical region within the rectangular box
+region           3Cu sphere 13 13 -13 12 units box
+create_atoms     1 region 3Cu units box
+Created 616 atoms
+  using box units in orthogonal box = (-25 0 -25) to (25 50 25)
+  create_atoms CPU = 0.000 seconds
+
+#----------------------------------------------------------------------------
+# Create a spherical region within the rectangular box
+region           4Cu sphere 13 38 -13 12 units box
+create_atoms     1 region 4Cu units box
+Created 619 atoms
+  using box units in orthogonal box = (-25 0 -25) to (25 50 25)
+  create_atoms CPU = 0.000 seconds
+
+#----------------------------------------------------------------------------
+# Create a spherical region within the rectangular box
+region           5Cu sphere -13 13 13 12 units box
+create_atoms     1 region 5Cu units box
+Created 616 atoms
+  using box units in orthogonal box = (-25 0 -25) to (25 50 25)
+  create_atoms CPU = 0.000 seconds
+#----------------------------------------------------------------------------
+# Create a spherical region within the rectangular box
+region           6Cu sphere -13 38 13 12 units box
+create_atoms     1 region 6Cu units box
+Created 619 atoms
+  using box units in orthogonal box = (-25 0 -25) to (25 50 25)
+  create_atoms CPU = 0.000 seconds
 #----------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+# Create a spherical region within the rectangular box
+region           7Cu sphere -13 13 -13 12 units box
+create_atoms     1 region 7Cu units box
+Created 616 atoms
+  using box units in orthogonal box = (-25 0 -25) to (25 50 25)
+  create_atoms CPU = 0.000 seconds
 
 # Integration timestep
 timestep         0.001
 #-------------------------------------------------------------------------------------------
 # Force calculations
 pair_style      eam/alloy
-pair_coeff      * * Cu_zhou.eam.alloy Cu 
+pair_coeff      * * Cu_zhou.eam.alloy Cu
 
 #-----------------------------------------------------------------------------------
 
 # Minimize to obtain the lowest energy state for the initial configuration
 minimize   1.0e-4 1.0e-2 100 100
-WARNING: Resetting reneighboring criteria during minimization (min.cpp:167)
-Memory usage per processor = 2.76511 Mbytes
-Step Temp E_pair E_mol TotEng Press 
-       0            0    -1150.013            0    -1150.013   -646.00883 
-       6            0   -1163.2474            0   -1163.2474    1218.5693 
-Loop time of 0.015677 on 1 procs for 6 steps with 361 atoms
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 11.0375
+  ghost atom cutoff = 11.0375
+  binsize = 5.51875, bins = 10 10 10
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair eam/alloy, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/3d
+      bin: standard
+WARNING: A per-atom density exceeded rhomax of EAM potential table - a linear extrapolation to the energy was made (src/MANYBODY/pair_eam.cpp:334)
+Per MPI rank memory allocation (min/avg/max) = 7.087 | 7.087 | 7.087 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press     
+         0   0              nan            0              nan            nan          
+         1   0              nan            0              nan            nan          
+Loop time of 9.2604 on 1 procs for 1 steps with 4321 atoms
+
+99.7% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 Minimization stats:
-  Stopping criterion = energy tolerance
+  Stopping criterion = linesearch alpha is zero
   Energy initial, next-to-last, final = 
-        -1150.01304064     -1163.16694366     -1163.24743172
-  Force two-norm initial, final = 23.1465 0.879665
-  Force max component initial, final = 3.36038 0.125128
-  Final line search alpha, max atom move = 0.25 0.0312819
-  Iterations, force evaluations = 6 12
+    -nan               -nan               -nan              
+  Force two-norm initial, final = -nan -nan
+  Force max component initial, final = 2.3363085 2.3363085
+  Final line search alpha, max atom move = 0 0
+  Iterations, force evaluations = 1 1072
 
-Pair  time (%) = 0.0156776 (100.004)
-Neigh time (%) = 0 (0)
-Comm  time (%) = 1.30688e-006 (0.00833625)
-Outpt time (%) = 0 (0)
-Other time (%) = -1.90246e-006 (-0.0121353)
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 9.213      | 9.213      | 9.213      |   0.0 | 99.49
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.017382   | 0.017382   | 0.017382   |   0.0 |  0.19
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 0.03       |            |       |  0.32
 
-Nlocal:    361 ave 361 max 361 min
+Nlocal:           4321 ave        4321 max        4321 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:    1268 ave 1268 max 1268 min
+Nghost:           8429 ave        8429 max        8429 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    45661 ave 45661 max 45661 min
+Neighs:         617343 ave      617343 max      617343 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 45661
-Ave neighs/atom = 126.485
+Total # of neighbors = 617343
+Ave neighs/atom = 142.8704
 Neighbor list builds = 0
 Dangerous builds = 0
-
 #-------------------------------------------------------------------------------
 
 # Output - thermodynamic
 thermo    100
-thermo_style custom step temp vol press pe ke etotal
+thermo_style custom step temp vol press pe ke etotal density
 
 #-------------------------------------------------------------------------------------
 
 # Visualize the atomic positions
-dump	1 all custom 100 Cu_sphere_*.lammpstrj id type x y z 
+dump	1 all custom 50 Cu_sphere_*.lammpstrj id type x y z
 
 #-----------------------------------------------------------
 
 # Log file for thermodynamic data
-log	log_Cu_300k.data
+log	log_Cu_melt.data

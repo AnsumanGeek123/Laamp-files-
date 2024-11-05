@@ -1,0 +1,11 @@
+
+# Initial velocity of the atoms
+velocity all create 300 873847 rot yes mom yes dist gaussian
+
+# Temperature controller; NVT heating
+# Heating phase
+fix	1 all npt temp 300 300 0.1 iso 0 0 0.1
+run     2000
+WARNING: A per-atom density exceeded rhomax of EAM potential table - a linear extrapolation to the energy was made (src/MANYBODY/pair_eam.cpp:334)
+ERROR: Non-numeric pressure - simulation unstable (src/fix_nh.cpp:1041)
+Last command: run     2000
